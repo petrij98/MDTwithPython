@@ -7,7 +7,7 @@ def problem_01(list_x, int_y):
     """
     list_r = []
     for i in range(0,len(list_x)):
-        if ((i + 1) % int_y) == 1:
+        if ((i + 1) % int_y) == 0:
             list_r.append(list_x[i])
     return list_r
 
