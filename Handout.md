@@ -10,25 +10,25 @@ The *Introduction to Python Programming* PCTC course is a good start for those t
 
 This website is a great for those with no coding experience and want to take their first steps to learn python. the whole recourse is interactive but the testing of knowledge is a bit easier that what the PCTC recourse offers
 
-> https://www.learnpython.org/
+> <https://www.learnpython.org/>
 
 A great book/website that will take you from zero to productive code writer
 
-> https://automatetheboringstuff.com/
+> <https://automatetheboringstuff.com/>
 
 ## Practice for proficiency
 
 Web-based simple coding comprehension tests
 
-> https://www.hackerrank.com/domains/python
+> <https://www.hackerrank.com/domains/python>
 
 Web-based small coding problems to test your understanding
 
-> https://codingbat.com/python
+> <https://codingbat.com/python>
 
 The grammar book of python, if you want to write code others can read it is important to follow the guidelines setout in this standard
 
-> https://www.python.org/dev/peps/pep-0008/
+> <https://www.python.org/dev/peps/pep-0008/>
 
 ## Python 3 > Python 2
 
