@@ -2,21 +2,10 @@
 
 import os
 
-import openpyxl
+from  openpyxl import load_workbook
 
-def user_select(option_list, selection_message):
-    """Returns !index! of the option from the option_list the user selects  
-    the user is precented with all options and then the selection message
-    """
-    print("--------------------")
-    for i in range(0, len(option_list)):
-        print("[" + str(i+1) + "] " + str(option_list[i]))
-    userSelection = raw_input(selection_message)
-    if userSelection.isdigit():
-        if int(userSelection) <= len(option_list) and int(userSelection) > 0:
-            return int(userSelection)-1
-    print("Improper input!!")
-    user_select(option_list, selection_message)
+from mdt_tools import mdt_tools
+
 
 def munch(xlrd_workbook, key, munch_column, first_row = 4):
     """Returns a list of tuples sorted by their second element
@@ -46,48 +35,46 @@ def munch(xlrd_workbook, key, munch_column, first_row = 4):
     return fieldValueSum_sorted
 
 if __name__ == '__main__':
-    fileList = []
-    for fileName in os.listdir('.'):
-        if fileName.endswith(".xlsx") and not fileName.startswith("Output"):
-            fileList.append(fileName)
-
-    workbookFile = fileList[user_select(fileList, "Select a file: ")]
+    file_list = mdt_tools.check_for_files([".xlsx"])
+    workbook_file = mdt_tools.menu(file_list, "Select a file: ")
     print("--------------------")
-    print("Reading from file: " + workbookFile)
+    print("Reading from file: " + workbook_file)
     try:
-        workbook = xlrd.open_workbook(workbookFile)
+        wb = load_workbook(workbook_file)
     except:
         print("Failed to load file, check integrity of file")
         quit()
+    aircraft_list = get_aircrafts(wb)
+    customer_list = get_customers(wb)
 
-    try:
-        aircrafts = [] 
-        customers = [] 
-        for i in range(0, workbook.nsheets):
-            sheet = workbook.sheet_by_index(i)
-            if str(sheet.cell_value(0,1)) != "Select... ":
-                if sheet.cell_value(0,1) not in aircrafts:
-                    aircrafts.append(int(sheet.cell_value(0,1)))
-            if str(sheet.cell_value(1,1)) != "Select...":
-                if str(sheet.cell_value(1,1)) not in customers:
-                    customers.append(str(sheet.cell_value(1,1))) 
-    except:
-        print(".xlsx file formating error, check customer and aircraft fields")
-        quit()
+    # try:
+    #     aircrafts = [] 
+    #     customers = [] 
+    #     for i in range(0, workbook):
+    #         sheet = workbook.sheet_by_index(i)
+    #         if str(sheet.cell_value(0,1)) != "Select... ":
+    #             if sheet.cell_value(0,1) not in aircrafts:
+    #                 aircrafts.append(int(sheet.cell_value(0,1)))
+    #         if str(sheet.cell_value(1,1)) != "Select...":
+    #             if str(sheet.cell_value(1,1)) not in customers:
+    #                 customers.append(str(sheet.cell_value(1,1))) 
+    # except:
+    #     print(".xlsx file formating error, check customer and aircraft fields")
+    #     quit()
 
-    inputSearchType = user_select(["Aircrafts","Customers","Both"], "Query by: ")
-    if inputSearchType == 0:
-        searchKeys = (aircrafts,None)
-    elif inputSearchType == 1:
-        searchKeys = (None,customers)
-    elif inputSearchType == 2:
-        searchKeys = (aircrafts,customers)
+    key_select = mdt_tools.menu([("Aircrafts",0),("Customers",1),("Both",2)], "Query by: ")
+    if key_select == 0:
+        search_keys = (aircrafts,None)
+    elif key_select == 1:
+        search_keys = (None,customers)
+    elif key_select == 2:
+        search_keys = (aircrafts,customers)
 
     key = [None,None]
 
-    if searchKeys[0]:
+    if search_keys[0]:
         key[0] = searchKeys[0][user_select(searchKeys[0],"Select a Aircrafts: ")]
-    if searchKeys[1]:
+    if search_keys[1]:
         key[1] = searchKeys[1][user_select(searchKeys[1],"Select a Customer: ")]
 
     try:
