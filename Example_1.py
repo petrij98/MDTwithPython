@@ -6,113 +6,103 @@ from openpyxl import load_workbook
 
 from Example_tools import menu, check_for_files
 
-# def munch(xlrd_workbook, key, munch_column, first_row = 4):
-#     """Returns a list of tuples sorted by their second element
-#     There first element of the tuple is a row name
-#     The second element is the number of hits
-#     """
-#     fieldValueSum = {}
-#     for i in range(0, xlrd_workbook.nsheets):
-#         sheet = xlrd_workbook.sheet_by_index(i)
-#         if ((key[0] == None or key[0] == sheet.cell_value(0, 1)) and \
-#             (key[1] == None or key[1] == sheet.cell_value(1, 1))):
-#             for j in range(first_row, sheet.nrows):
-#                 if(sheet.cell_value(j,munch_column) != ""):
-#                     field = str(sheet.cell_value(j,munch_column))
-#                     try:
-#                         #numbers like 2 in the xlsx file will be read in as 2.0
-#                         #this will make sure they are read in as 2
-#                         field = str(int(float(field)))
-#                     except:
-#                         pass
-#                     if field not in fieldValueSum:
-#                         fieldValueSum[field] = int(sheet.cell_value(j,munch_column+1))
-#                     else:
-#                         fieldValueSum[field] += int(sheet.cell_value(j,munch_column+1))
+def munch(wb, key, munch_column, first_row = 5):
+    """Returns a list of tuples sorted by their second element
+    There first element of the tuple is a row name
+    The second element is the number of hits
+    """
+    field_value_sum = {}
+    for i in wb.sheetnames:
+        sheet = wb[i]
+        if ((key[0] == None or key[0] == sheet.cell(row=1, column=2).value) and\
+            (key[1] == None or key[1] == sheet.cell(row=2, column=2).value)):
+            for j in range(first_row, sheet.max_row):
+                if(sheet.cell(row=j,column=munch_column).value != None):
+                    field = str(sheet.cell(row=j,column=munch_column).value)
+                    try:
+                        #numbers like 2 in the xlsx file will be read in as 2.0
+                        #this will make sure they are read in as 2
+                        field = str(int(float(field)))
+                    except:
+                        pass
+                    if field not in field_value_sum:
+                        field_value_sum[field] = int(sheet.cell(row=j,column=munch_column+1).value)
+                    else:
+                        field_value_sum[field] += int(sheet.cell(row=j,column=munch_column+1).value)
 
-#     fieldValueSum_sorted = sorted(fieldValueSum.items(), key=lambda x: x[1], reverse = True)
-#     return fieldValueSum_sorted
-
-
-# try:
-#     aircrafts = []
-#     customers = []
-#     for i in range(0, workbook):
-#         sheet = workbook.sheet_by_index(i)
-#         if str(sheet.cell_value(0,1)) != "Select... ":
-#             if sheet.cell_value(0,1) not in aircrafts:
-#                 aircrafts.append(int(sheet.cell_value(0,1)))
-#         if str(sheet.cell_value(1,1)) != "Select...":
-#             if str(sheet.cell_value(1,1)) not in customers:
-#                 customers.append(str(sheet.cell_value(1,1)))
-# except:
-#     print(".xlsx file formating error, check customer and aircraft fields")
-#     quit()
-
-
-def get_aircrafts(xlsx_workbook):
-    return 0
-
-def get_customers(xlsx_workbook):
-    return 0
+    field_value_sum_sorted = sorted(field_value_sum.items(), key=lambda x: x[1], reverse = True)
+    return field_value_sum_sorted
 
 if __name__ == '__main__':
     file_list = check_for_files([".xlsx"])
-    workbook_filename = menu(file_list, "Select a file: ")
+    workbook_filename = file_list[menu(file_list, "Select a file: ")]
     print("--------------------")
     print("Reading from file: " + workbook_filename)
     try:
         wb = load_workbook(workbook_filename)
-        wb_sheets = wb.get_sheet_names()
     except:
         print("Failed to load file, check integrity of file")
         quit()
 
-    aircraft_list = get_aircrafts(wb)
-    customer_list = get_customers(wb)
-    key_select = menu(["Aircrafts","Customers","Both"], "Query by: ")
-    if key_select == "Aircrafts":
+    try:
+        aircraft_list = []
+        customer_list = []
+        for i in wb.sheetnames:
+            sheet = wb[i]
+            if str(sheet.cell(row=1,column=2).value) != "Select... ":
+                if sheet.cell(row=1,column=2).value not in aircraft_list:
+                    aircraft_list.append(int(sheet.cell(row=1,column=2).value))
+            if str(sheet.cell(row=2,column=2).value) != "Select...":
+                if str(sheet.cell(row=2,column=2).value) not in customer_list:
+                    customer_list.append(str(sheet.cell(row=2,column=2).value))
+    except:
+        print(".xlsx file formating error, check customer and aircraft fields")
+        quit()
+
+    key_selected = menu(["Aircrafts","Customers","Both"], "Query by: ")
+    if key_selected == 0:
         search_keys = (aircraft_list,None)
-    elif key_select == "Customers":
+    elif key_selected == 1:
         search_keys = (None,customer_list)
-    elif key_select == "Both":
+    elif key_selected == 2:
         search_keys = (aircraft_list,customer_list)
 
-    # key = [None,None]
-    # if search_keys[0]:
-    #     key[0] = search_keys[0][\
-    #         menu(search_keys[0],"Select a Aircrafts: ")]
-    # if search_keys[1]:
-    #     key[1] = search_keys[1][\
-    #         menu(search_keys[1],"Select a Customer: ")]
+    key = [None,None]
+    if search_keys[0]:
+        key[0] = search_keys[0][\
+            menu(search_keys[0],"Select a Aircrafts: ")]
+    if search_keys[1]:
+        key[1] = search_keys[1][\
+            menu(search_keys[1],"Select a Customer: ")]
 
-    # ## <-----------------
-    # try:
-    #     format_sheet = wb.get_sheet_by_name(wb_sheets[0])
-    #     column_names = ["All"]
-    #     column_names_index = {}
-    #     for i in range(0, testSheet.ncols):
-    #         if testSheet.cell_value(3,i) == "Hits":
-    #             columnNames.append(str(testSheet.cell_value(3,i-1)))
-    #             columnNamesIndex[str(testSheet.cell_value(3,i-1))] = i-1
-    # except:
-    #     print(".xlsx file formating error, check column headers")
-    #     quit()
+    try:
+        format_sheet = wb[wb.sheetnames[0]]
+        column_names = ["All"]
+        column_name_to_index = {}
+        for i in range(1, format_sheet.max_column):
+            if format_sheet.cell(row=4, column=i).value == "Hits":
+                column_names.append(format_sheet.cell(row=4, column=i-1).value)
+                column_name_to_index[format_sheet.cell(row=4, column=i-1).value] = i-1
+    except:
+        print(".xlsx file formating error, check column headers")
+        quit()
 
-    # sumColumn = columnNames[user_select(columnNames,"What field do you want to munch: ")]
+    column_to_sum = menu(column_names,"What field do you want to munch: ")
 
-    # sumSortedFields = {}
-    # try:
-    #     if sumColumn == "All":
-    #         for i in columnNamesIndex:
-    #             sumSortedFields[i] = munch(workbook, key, columnNamesIndex[i])
-    #     else:
-    #         sumSortedFields[sumColumn] = munch(workbook, key, columnNamesIndex[sumColumn])
-    # except:
-    #     print(".xlsx file formating error, check all hit field only have int")
-    #     quit()
+    sum_sorted_fields = {}
+    try:
+        if column_names[column_to_sum] == "All":
+            for i in range(1,len(column_names)-1):
+                sum_sorted_fields[column_names[i]] = \
+                    munch(wb, key, column_name_to_index[column_names[i]])
+        else:
+            sum_sorted_fields[column_names[column_to_sum]] = \
+                munch(wb, key, column_name_to_index[column_names[column_to_sum]])        
+    except:
+        print(".xlsx file formating error, check all hit field only have int")
+        quit()
 
-    # fieldTotalHits = {}
+    # column_total = {}
     # for i in sumSortedFields:
     #     totalHits = 0
     #     for j in range(0, len(sumSortedFields[i])):
