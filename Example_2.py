@@ -5,7 +5,7 @@ import os
 import PyPDF2
 import docx
 
-from mdt_tools import mdt_tools
+from Example_tools import menu, check_for_files
 
 #Calls the right parser function based on file type
 def parse(file_target, option):
@@ -24,9 +24,9 @@ def parse_excel(file_target,option):
 
 #More or less the main function of the program
 if __name__ == '__main__':
-    file_list = mdt_tools.check_for_files([".docx",".pdf"])
-    file_target = mdt_tools.menu(file_list,"What file do you want to operate on? ")
+    file_list = check_for_files([".docx",".pdf"])
+    file_target = menu(file_list,"What file do you want to operate on? ")
     operation_list = [(None,None),(None,None)]
-    operation = mdt_tools.menu(operation_list,"What operation would you proform on the file? ") 
+    operation = menu(operation_list,"What operation would you proform on the file? ") 
     parse_result = parse(file_target, operation)
     print(parse_result)

@@ -7,7 +7,7 @@ def menu(option_list, message):
     """
     print("--------------------")
     for i in range(0, len(option_list)):
-        print("[" + str(i+1) + "] " + str(option_list[i]))
+        print("[%d] %s"  % (i+1, option_list[i]))
     userSelection = input(message)
     if userSelection.isdigit():
         if int(userSelection) <= len(option_list) and int(userSelection) > 0:

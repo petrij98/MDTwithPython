@@ -4,7 +4,7 @@ import os
 
 from openpyxl import load_workbook
 
-from mdt_tools import mdt_tools
+from Example_tools import menu, check_for_files
 
 # def munch(xlrd_workbook, key, munch_column, first_row = 4):
 #     """Returns a list of tuples sorted by their second element
@@ -34,20 +34,20 @@ from mdt_tools import mdt_tools
 #     return fieldValueSum_sorted
 
 
-    # try:
-    #     aircrafts = [] 
-    #     customers = [] 
-    #     for i in range(0, workbook):
-    #         sheet = workbook.sheet_by_index(i)
-    #         if str(sheet.cell_value(0,1)) != "Select... ":
-    #             if sheet.cell_value(0,1) not in aircrafts:
-    #                 aircrafts.append(int(sheet.cell_value(0,1)))
-    #         if str(sheet.cell_value(1,1)) != "Select...":
-    #             if str(sheet.cell_value(1,1)) not in customers:
-    #                 customers.append(str(sheet.cell_value(1,1))) 
-    # except:
-    #     print(".xlsx file formating error, check customer and aircraft fields")
-    #     quit()
+# try:
+#     aircrafts = [] 
+#     customers = [] 
+#     for i in range(0, workbook):
+#         sheet = workbook.sheet_by_index(i)
+#         if str(sheet.cell_value(0,1)) != "Select... ":
+#             if sheet.cell_value(0,1) not in aircrafts:
+#                 aircrafts.append(int(sheet.cell_value(0,1)))
+#         if str(sheet.cell_value(1,1)) != "Select...":
+#             if str(sheet.cell_value(1,1)) not in customers:
+#                 customers.append(str(sheet.cell_value(1,1))) 
+# except:
+#     print(".xlsx file formating error, check customer and aircraft fields")
+#     quit()
 
 
 def get_aircrafts(xlsx_workbook):
@@ -57,19 +57,20 @@ def get_customers(xlsx_workbook):
     return 0
 
 if __name__ == '__main__':
-    file_list = mdt_tools.check_for_files([".xlsx"])
-    workbook_filename = file_list[mdt_tools.menu(file_list, "Select a file: ")]
+    file_list = check_for_files([".xlsx"])
+    workbook_filename = file_list[menu(file_list, "Select a file: ")]
     print("--------------------")
     print("Reading from file: " + workbook_filename)
     try:
         wb = load_workbook(workbook_filename)
+        wb_sheets = wb.get_sheet_names()
     except:
         print("Failed to load file, check integrity of file")
         quit()
     
     aircraft_list = get_aircrafts(wb)
     customer_list = get_customers(wb)
-    key_select = mdt_tools.menu(["Aircrafts","Customers","Both"], "Query by: ")
+    key_select = menu(["Aircrafts","Customers","Both"], "Query by: ")
     if key_select == 0:
         search_keys = (aircraft_list,None)
     elif key_select == 1:
@@ -80,15 +81,16 @@ if __name__ == '__main__':
     key = [None,None]
     if search_keys[0]:
         key[0] = search_keys[0][\
-            mdt_tools.menu(search_keys[0],"Select a Aircrafts: ")]
+            menu(search_keys[0],"Select a Aircrafts: ")]
     if search_keys[1]:
         key[1] = search_keys[1][\
-            mdt_tools.menu(search_keys[1],"Select a Customer: ")]
+            menu(search_keys[1],"Select a Customer: ")]
 
+    ## <-----------------
     try:
-        testSheet = workbook.sheet_by_index(0)
-        columnNames = ["All"]
-        columnNamesIndex = {}
+        format_sheet = wb.get_sheet_by_name(wb_sheets[0])
+        column_names = ["All"]
+        column_names_index = {}
         for i in range(0, testSheet.ncols):
             if testSheet.cell_value(3,i) == "Hits":
                 columnNames.append(str(testSheet.cell_value(3,i-1)))
