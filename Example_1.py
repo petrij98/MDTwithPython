@@ -8,8 +8,8 @@ from Example_tools import menu, check_for_files
 
 # def munch(xlrd_workbook, key, munch_column, first_row = 4):
 #     """Returns a list of tuples sorted by their second element
-#     There first element of the tuple is a row name 
-#     The second element is the number of hits 
+#     There first element of the tuple is a row name
+#     The second element is the number of hits
 #     """
 #     fieldValueSum = {}
 #     for i in range(0, xlrd_workbook.nsheets):
@@ -20,9 +20,9 @@ from Example_tools import menu, check_for_files
 #                 if(sheet.cell_value(j,munch_column) != ""):
 #                     field = str(sheet.cell_value(j,munch_column))
 #                     try:
-#                         #numbers like 2 in the xlsx file will be read in as 2.0 
+#                         #numbers like 2 in the xlsx file will be read in as 2.0
 #                         #this will make sure they are read in as 2
-#                         field = str(int(float(field))) 
+#                         field = str(int(float(field)))
 #                     except:
 #                         pass
 #                     if field not in fieldValueSum:
@@ -35,8 +35,8 @@ from Example_tools import menu, check_for_files
 
 
 # try:
-#     aircrafts = [] 
-#     customers = [] 
+#     aircrafts = []
+#     customers = []
 #     for i in range(0, workbook):
 #         sheet = workbook.sheet_by_index(i)
 #         if str(sheet.cell_value(0,1)) != "Select... ":
@@ -44,7 +44,7 @@ from Example_tools import menu, check_for_files
 #                 aircrafts.append(int(sheet.cell_value(0,1)))
 #         if str(sheet.cell_value(1,1)) != "Select...":
 #             if str(sheet.cell_value(1,1)) not in customers:
-#                 customers.append(str(sheet.cell_value(1,1))) 
+#                 customers.append(str(sheet.cell_value(1,1)))
 # except:
 #     print(".xlsx file formating error, check customer and aircraft fields")
 #     quit()
@@ -58,7 +58,7 @@ def get_customers(xlsx_workbook):
 
 if __name__ == '__main__':
     file_list = check_for_files([".xlsx"])
-    workbook_filename = file_list[menu(file_list, "Select a file: ")]
+    workbook_filename = menu(file_list, "Select a file: ")
     print("--------------------")
     print("Reading from file: " + workbook_filename)
     try:
@@ -67,37 +67,37 @@ if __name__ == '__main__':
     except:
         print("Failed to load file, check integrity of file")
         quit()
-    
+
     aircraft_list = get_aircrafts(wb)
     customer_list = get_customers(wb)
     key_select = menu(["Aircrafts","Customers","Both"], "Query by: ")
-    if key_select == 0:
+    if key_select == "Aircrafts":
         search_keys = (aircraft_list,None)
-    elif key_select == 1:
+    elif key_select == "Customers":
         search_keys = (None,customer_list)
-    elif key_select == 2:
+    elif key_select == "Both":
         search_keys = (aircraft_list,customer_list)
 
-    key = [None,None]
-    if search_keys[0]:
-        key[0] = search_keys[0][\
-            menu(search_keys[0],"Select a Aircrafts: ")]
-    if search_keys[1]:
-        key[1] = search_keys[1][\
-            menu(search_keys[1],"Select a Customer: ")]
+    # key = [None,None]
+    # if search_keys[0]:
+    #     key[0] = search_keys[0][\
+    #         menu(search_keys[0],"Select a Aircrafts: ")]
+    # if search_keys[1]:
+    #     key[1] = search_keys[1][\
+    #         menu(search_keys[1],"Select a Customer: ")]
 
-    ## <-----------------
-    try:
-        format_sheet = wb.get_sheet_by_name(wb_sheets[0])
-        column_names = ["All"]
-        column_names_index = {}
-        for i in range(0, testSheet.ncols):
-            if testSheet.cell_value(3,i) == "Hits":
-                columnNames.append(str(testSheet.cell_value(3,i-1)))
-                columnNamesIndex[str(testSheet.cell_value(3,i-1))] = i-1
-    except:
-        print(".xlsx file formating error, check column headers")
-        quit()
+    # ## <-----------------
+    # try:
+    #     format_sheet = wb.get_sheet_by_name(wb_sheets[0])
+    #     column_names = ["All"]
+    #     column_names_index = {}
+    #     for i in range(0, testSheet.ncols):
+    #         if testSheet.cell_value(3,i) == "Hits":
+    #             columnNames.append(str(testSheet.cell_value(3,i-1)))
+    #             columnNamesIndex[str(testSheet.cell_value(3,i-1))] = i-1
+    # except:
+    #     print(".xlsx file formating error, check column headers")
+    #     quit()
 
     # sumColumn = columnNames[user_select(columnNames,"What field do you want to munch: ")]
 
@@ -110,7 +110,7 @@ if __name__ == '__main__':
     #         sumSortedFields[sumColumn] = munch(workbook, key, columnNamesIndex[sumColumn])
     # except:
     #     print(".xlsx file formating error, check all hit field only have int")
-    #     quit()    
+    #     quit()
 
     # fieldTotalHits = {}
     # for i in sumSortedFields:
@@ -118,7 +118,7 @@ if __name__ == '__main__':
     #     for j in range(0, len(sumSortedFields[i])):
     #         totalHits += sumSortedFields[i][j][1]
     #     fieldTotalHits[i] = totalHits
-    
+
     # if key[0] and key[1]:
     #     keyPrint = str(key[0]) + " + " + str(key[1])
     # elif key[0]:
@@ -127,7 +127,7 @@ if __name__ == '__main__':
     #     keyPrint = str(key[1])
     # print("--------------------")
     # print(keyPrint + " traffic looks like:")
-    
+
     # for i in sumSortedFields:
     #     if sumSortedFields[i]:
     #         print("--------------------")
@@ -138,7 +138,7 @@ if __name__ == '__main__':
     #                 str(sumSortedFields[i][j][1]) + " hits ~" + \
     #                 str(round(hitPercentage, 2)) + "% of traffic")
 
-    # print("--------------------")  
+    # print("--------------------")
     # inputKey = raw_input("[1] Save to Output#.Xlsx (Eny other key to exit) ")
     # if inputKey == "1":
     #     n = 1
@@ -159,6 +159,6 @@ if __name__ == '__main__':
     #                 worksheet.write(j+2, c+1, sumSortedFields[i][j][1])
     #                 worksheet.write(j+2, c+2, round(hitPercentage,2))
     #             c += 3
-        
+
     #     outputWorkbook.close()
     #     print("Output%s.xlsx Genarated" % n)

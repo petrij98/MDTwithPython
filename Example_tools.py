@@ -1,19 +1,23 @@
 import os
 
-def menu(option_list, message):
-    """Returns the index of the option the user selects from the list
-    takes a list of string and a message   
-    the user is precented with options list and the message
+def menu(option_input, message):
+    """Takes a list or dictionary and a message
+    returns the dictionary key or entry in list 
+    shows message to user and prompts to select option
     """
+    #this little look is needed to handle dictionaries
+    option_list = []
+    for i in option_input:
+        option_list.append(i)
     print("--------------------")
-    for i in range(0, len(option_list)):
+    for i in range(0,len(option_list)):
         print("[%d] %s"  % (i+1, option_list[i]))
     userSelection = input(message)
     if userSelection.isdigit():
         if int(userSelection) <= len(option_list) and int(userSelection) > 0:
-            return int(userSelection)-1
+            return option_list[int(userSelection)-1]
     print("Improper input!!")
-    menu(option_list, message)
+    menu(option_input, message)
 
 def check_for_files(filetype_list, directory_path = '.'):
     """Returns a list of filenames
